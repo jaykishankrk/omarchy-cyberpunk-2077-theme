@@ -9,7 +9,7 @@ Fan work inspired by *Cyberpunk 2077*. Not affiliated with CD PROJEKT RED.
 ## Install
 
 ```bash
-omarchy theme install https://github.com/YOUR_GITHUB_USER/omarchy-cyberpunk-2077-theme.git
+omarchy theme install https://github.com/jaykishankrk/omarchy-cyberpunk-2077-theme.git
 ```
 
 Then:
