@@ -1,0 +1,39 @@
+mode = "dark"
+
+# Night City: CDPR's branding yellow against purple-black, with HUD cyan and
+# trauma-team red. Yellow is the signature accent; keep body text off-white.
+
+accent = "#fcee0a"
+selection = "#2a2038"
+muted = "#5c5368"
+
+background = "#0d0a12"
+dark_background = "#09070c"
+darker_background = "#050407"
+lighter_background = "#1c1528"
+
+foreground = "#ece6ef"
+dark_foreground = "#6e647c"
+light_foreground = "#d4cde0"
+bright_foreground = "#f8f4e8"
+
+hyprland_active_border = "rgba(fcee0aee) rgba(00f0ffcc) 45deg"
+hyprland_inactive_border = "rgba(2a2038aa)"
+active_border_color = "#fcee0a"
+active_tab_background = "#fcee0a"
+
+red = "#ff003c"
+yellow = "#fcee0a"
+orange = "#ff6b11"
+green = "#00ff9f"
+cyan = "#00f0ff"
+blue = "#2b8cff"
+magenta = "#ff2a6d"
+brown = "#6b3a28"
+
+bright_red = "#ff4d6d"
+bright_yellow = "#fff45a"
+bright_green = "#5cffc0"
+bright_cyan = "#7af8ff"
+bright_blue = "#6aadff"
+bright_magenta = "#ff6b9d"
