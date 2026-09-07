@@ -1,0 +1,83 @@
+#!/bin/bash
+# Night City 4K screensaver. Replaces omarchy-launch-screensaver while this
+# theme is current. Windows use class org.omarchy.screensaver so Omarchy idle
+# tracking still works.
+
+set -euo pipefail
+
+HERE=$(cd "$(dirname -- "$0")" && pwd)
+VIDEO="$HERE/night-city-4k.mp4"
+STILL="$HERE/night-city-4k.jpg"
+
+if ! command -v mpv >/dev/null 2>&1; then
+  exec /usr/share/omarchy/bin/omarchy-launch-screensaver "$@"
+fi
+
+if [[ ! -f $VIDEO && ! -f $STILL ]]; then
+  exec /usr/share/omarchy/bin/omarchy-launch-screensaver "$@"
+fi
+
+if pgrep -f '[o]rg.omarchy.screensaver' >/dev/null; then
+  exit 0
+fi
+
+if command -v omarchy-toggle-enabled >/dev/null 2>&1; then
+  if omarchy-toggle-enabled screensaver-off && [[ ${1:-} != force ]]; then
+    exit 1
+  fi
+fi
+
+media=$VIDEO
+[[ -f $VIDEO ]] || media=$STILL
+
+focused=$(omarchy-hyprland-monitor-focused 2>/dev/null || true)
+
+hypr_focus_monitor() {
+  hyprctl dispatch "hl.dsp.focus({ monitor = \"$1\" })" >/dev/null 2>&1 || hyprctl dispatch focusmonitor "$1" >/dev/null
+}
+
+hypr_exec() {
+  local command
+  printf -v command '%q ' "$@"
+  hyprctl dispatch "hl.dsp.exec_cmd([[$command]])" >/dev/null 2>&1 || hyprctl dispatch exec -- bash -lc "$command" >/dev/null
+}
+
+SOCKET="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr/${HYPRLAND_INSTANCE_SIGNATURE:-}/.socket2.sock"
+
+exec {events}< <(socat -U - "UNIX-CONNECT:$SOCKET")
+
+wait_for_screensaver_window() {
+  local line deadline=$((SECONDS + 5))
+  while ((SECONDS < deadline)) && IFS= read -r -t $((deadline - SECONDS)) -u "$events" line; do
+    [[ $line == openwindow\>\>*,org.omarchy.screensaver,* ]] && return 0
+  done
+}
+
+hyprctl eval 'hl.config({ cursor = { invisible = true } })' &>/dev/null \
+  || hyprctl keyword cursor:invisible true &>/dev/null \
+  || true
+
+for m in $(hyprctl monitors -j | jq -r '.[] | .name'); do
+  hypr_focus_monitor "$m"
+  hypr_exec mpv \
+    --fullscreen \
+    --loop-file=inf \
+    --no-audio \
+    --no-osc \
+    --osd-level=0 \
+    --really-quiet \
+    --hwdec=auto \
+    --cursor-autohide=always \
+    --no-input-default-bindings \
+    --wayland-app-id=org.omarchy.screensaver \
+    --x11-name=org.omarchy.screensaver \
+    --title=org.omarchy.screensaver \
+    --script="$HERE/quit-on-input.lua" \
+    --image-display-duration=inf \
+    -- "$media"
+  wait_for_screensaver_window
+done
+
+if [[ -n ${focused:-} ]]; then
+  hypr_focus_monitor "$focused"
+fi

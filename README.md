@@ -22,6 +22,26 @@ Or Walker: `Super+Alt+Space` → Install → Theme → paste the repo URL.
 
 Cycle wallpapers with `omarchy theme bg next`. The default is `1-night-city-plaza.jpg`.
 
+Then enable the 4K screensaver (once per machine):
+
+```bash
+omarchy hook install theme-set ~/.config/omarchy/themes/cyberpunk-2077/hooks/theme-set-screensaver.sh
+omarchy theme set "Cyberpunk 2077"
+```
+
+Idle still uses Omarchy's timer (`idle.screensaver` in `~/.config/omarchy/shell.json`, default 150s). While this theme is current, that launches a **3840×2160** Night City loop (mpv, one fullscreen window per monitor) instead of the ASCII ttfx saver. Switching away restores the stock saver.
+
+## Screensaver
+
+| File | What |
+|---|---|
+| `screensaver/night-city-4k.mp4` | 58s ping-pong Ken Burns loop, 3840×2160 H.264 |
+| `screensaver/night-city-4k.jpg` | HUD-framed plaza still, 3840×2160 |
+| `screensaver/launch` | mpv launcher, window class `org.omarchy.screensaver` |
+| `screensaver.txt` | ASCII "NIGHT CITY" fallback if mpv is missing |
+
+Shots are the four theme wallpapers, native 4K, with yellow/cyan HUD brackets on the plaza.
+
 ## Wallpapers
 
 | File | Shot |
